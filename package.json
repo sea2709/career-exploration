@@ -12,15 +12,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@ai-sdk/google": "^4.0.85",
-    "@ai-sdk/mcp": "^2.0.62",
     "@ai-sdk/react": "^4.0.125",
     "@astrojs/mdx": "^8.0.1",
     "@astrojs/node": "^11.1.6",
     "@astrojs/react": "^7.0.0",
     "@sanity/astro": "^3.5.1",
     "@sanity/client": "^8.9.0",
-    "@sanity/context": "^2.1.0",
     "@sanity/image-url": "^2.1.1",
     "@tailwindcss/vite": "^4.2.1",
     "@types/canvas-confetti": "^1.9.0",
@@ -37,8 +34,7 @@
     "sanity": "^6.17.0",
     "styled-components": "^6.5.3",
     "tailwindcss": "^4.2.1",
-    "vite": "^8.0.13",
-    "zod": "^4.6.5"
+    "vite": "^8.0.13"
   },
   "allowScripts": {
     "esbuild": true

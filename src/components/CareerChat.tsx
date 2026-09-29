@@ -1,8 +1,10 @@
 import { useChat } from '@ai-sdk/react';
-import { getToolName, isToolUIPart } from 'ai';
+import { DefaultChatTransport, getToolName, isToolUIPart } from 'ai';
+import { PUBLIC_AGENT_URL } from 'astro:env/client';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
-import type { CareerAgentUIMessage } from '../lib/onet/agent';
+
+const transport = new DefaultChatTransport({ api: new URL('/chat', PUBLIC_AGENT_URL).toString() });
 
 const TOOL_LABELS: Record<string, string> = {
 	searchOccupations: 'Searching occupations',
@@ -40,7 +42,7 @@ function ToolChip({ part }: { part: Parameters<typeof getToolName>[0] }) {
 }
 
 export default function CareerChat() {
-	const { messages, sendMessage, status, error, stop } = useChat<CareerAgentUIMessage>();
+	const { messages, sendMessage, status, error, stop } = useChat({ transport });
 	const [input, setInput] = useState('');
 	const bottomRef = useRef<HTMLDivElement>(null);
 	const busy = status === 'submitted' || status === 'streaming';
