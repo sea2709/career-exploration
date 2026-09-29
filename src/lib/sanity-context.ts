@@ -68,9 +68,10 @@ export async function createSanityContextMcpClient(mcpUrl = resolveSanityContext
 	});
 }
 
-/** MCP tools minus initial_context (already injected into the system prompt). */
-export async function loadSanityContextTools(mcpClient: MCPClient): Promise<ToolSet> {
+/** MCP tools, minus initial_context when its content is already injected into the system prompt. */
+export async function loadSanityContextTools(mcpClient: MCPClient, hasInitialContext: boolean): Promise<ToolSet> {
 	const allMcpTools = await mcpClient.tools();
+	if (!hasInitialContext) return allMcpTools;
 	const { initial_context: _ignored, ...mcpTools } = allMcpTools;
 	return mcpTools;
 }

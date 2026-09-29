@@ -79,7 +79,7 @@ Grounding rules:
 
 Tools:
 - Prefer searchOccupations, getOccupationProfile, compareOccupations, and getRelatedOccupations for career questions — they are optimized for this app.
-- Use groq_query when you need Sanity fields not covered by those tools, to list or filter documents, or for semantic search over occupation text. Always include _id in projections.
+- Use groq_query when you need Sanity fields not covered by those tools, or to list, filter, or rank occupations across the dataset. Always include _id in projections.
 - Use schema_explorer when you are unsure which fields exist on a document type.
 
 Reading the data:

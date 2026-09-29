@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
 		]);
 		mcpClient = mcpClientResult;
 
-		const sanityContextTools = await loadSanityContextTools(mcpClient);
+		const sanityContextTools = await loadSanityContextTools(mcpClient, Boolean(initialContext));
 		const agent = createCareerAgent({
 			sanityContextTools,
 			initialContext,
