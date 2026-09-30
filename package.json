@@ -1,0 +1,33 @@
+{
+  "name": "careers-exploration-functions",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "license": "UNLICENSED",
+  "scripts": {
+    "plan": "sanity blueprints plan",
+    "deploy": "sanity blueprints deploy --fn-installer pnpm",
+    "test:functions": "sanity functions test classify-conversations --with-user-token"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^4.0.85",
+    "@sanity/client": "^8.9.0",
+    "@sanity/context": "^2.1.0",
+    "@sanity/functions": "^1.8.0",
+    "ai": "^7.0.122",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@sanity/blueprints": "^0.27.0",
+    "@sanity/cli": "^8.13.0",
+    "@types/node": "^26.6.2",
+    "dotenv": "^18.0.1",
+    "typescript": "^5.8"
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "printWidth": 100,
+    "semi": false,
+    "singleQuote": true
+  }
+}

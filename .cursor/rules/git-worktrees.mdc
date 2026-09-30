@@ -1,0 +1,50 @@
+---
+description: Create a git worktree inside the domain folder whenever a new branch is requested
+alwaysApply: true
+---
+
+# New Branch = New Worktree
+
+`web/`, `agent/`, and `studio/` are separate git repos. The workspace root is its own repo
+that ignores those three folders and only tracks shared files (`functions/`,
+`sanity.blueprint.ts`, `.cursor/`, etc.). When the user asks to create a new branch in a
+domain, never run `git checkout -b` / `git switch -c` in the main checkout. Create a
+worktree inside that domain instead.
+
+## Steps
+
+1. Determine the domain (`web`, `agent`, or `studio`) from the request or the files being
+   discussed. If it is ambiguous, ask.
+2. Make sure `.worktrees/` is listed in `<domain>/.gitignore`; add it if missing.
+3. Create the worktree from the domain's default branch (`web` uses `master`, `agent` and
+   `studio` use `main`). Replace `/` with `-` in the folder name:
+
+```bash
+cd <domain>
+git worktree add -b <branch> .worktrees/<branch-with-dashes> <default-branch>
+```
+
+4. Bootstrap the worktree, since untracked files are not copied:
+
+```bash
+cp <domain>/.env <domain>/.worktrees/<folder>/.env   # if .env exists
+cd <domain>/.worktrees/<folder> && npm install
+```
+
+5. Do all further work for that branch inside `<domain>/.worktrees/<folder>/`.
+
+## Example
+
+"Create a branch `feature/career-quiz` for the web app":
+
+```bash
+cd web
+git worktree add -b feature/career-quiz .worktrees/feature-career-quiz master
+cp .env .worktrees/feature-career-quiz/.env
+cd .worktrees/feature-career-quiz && npm install
+```
+
+## Cleanup
+
+When the user is done with a branch: `git worktree remove .worktrees/<folder>` from the
+domain root (add `git branch -d <branch>` only if they ask to delete the branch).

@@ -1,0 +1,19 @@
+node_modules
+
+# Independent repos with their own remotes
+/web/
+/agent/
+/studio/
+
+# Sanity Functions build output
+/functions/*/.build
+
+# Links this Blueprint to its remote Stack (not secret, but machine-local)
+/.sanity
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+*.log
