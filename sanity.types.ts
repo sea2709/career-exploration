@@ -12,388 +12,453 @@
  * ---------------------------------------------------------------------------------
  */
 
-export declare const internalGroqTypeReferenceTo: unique symbol;
+export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: schema.json
 export type CoachingGuide = {
-  _id: string;
-  _type: "coachingGuide";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
+  _id: string
+  _type: 'coachingGuide'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
   category?:
-    | "answering"
-    | "behavioral"
-    | "skills"
-    | "workStyles"
-    | "grading"
-    | "feedback"
-    | "situations"
-    | "practice";
-  jobZones?: Array<number>;
-  summary?: string;
+    | 'answering'
+    | 'behavioral'
+    | 'skills'
+    | 'workStyles'
+    | 'grading'
+    | 'feedback'
+    | 'situations'
+    | 'practice'
+  jobZones?: Array<number>
+  summary?: string
   body?: Array<{
     children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h3";
-    listItem?: "bullet";
-    markDefs?: null;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-};
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?: 'normal' | 'h3'
+    listItem?: 'bullet'
+    markDefs?: null
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+}
+
+export type OnetInterestReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'onetInterest'
+}
+
+export type OnetInterestAreaScore = {
+  _type: 'onetInterestAreaScore'
+  area?: OnetInterestReference
+  name?: string
+  score?: number
+  displayRank?: number
+}
 
 export type OnetOccupationReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "onetOccupation";
-};
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'onetOccupation'
+}
 
 export type OnetRelatedOccupationItem = {
-  _type: "onetRelatedOccupationItem";
-  occupation?: OnetOccupationReference;
-  relatednessTier?: "Primary-Short" | "Primary-Long" | "Supplemental";
-  relatedIndex?: number;
-};
+  _type: 'onetRelatedOccupationItem'
+  occupation?: OnetOccupationReference
+  relatednessTier?: 'Primary-Short' | 'Primary-Long' | 'Supplemental'
+  relatedIndex?: number
+}
 
 export type OnetContentModelElementReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "onetContentModelElement";
-};
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'onetContentModelElement'
+}
 
 export type OnetScaleReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "onetScale";
-};
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'onetScale'
+}
 
 export type OnetRatingCategoryReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "onetRatingCategory";
-};
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'onetRatingCategory'
+}
 
 export type OnetRatingItem = {
-  _type: "onetRatingItem";
+  _type: 'onetRatingItem'
   domain?:
-    | "essentialSkills"
-    | "transferableSkills"
-    | "knowledge"
-    | "abilities"
-    | "workActivities"
-    | "education"
-    | "workContext";
-  element?: OnetContentModelElementReference;
-  scale?: OnetScaleReference;
-  ratingCategory?: OnetRatingCategoryReference;
-  dataValue?: number;
-  n?: number;
-  standardError?: number;
-  lowerCiBound?: number;
-  upperCiBound?: number;
-  recommendSuppress?: "Y" | "N";
-  notRelevant?: "Y" | "N";
-  dateUpdated?: string;
-  domainSource?: string;
-};
+    | 'essentialSkills'
+    | 'transferableSkills'
+    | 'knowledge'
+    | 'abilities'
+    | 'workActivities'
+    | 'education'
+    | 'workContext'
+  element?: OnetContentModelElementReference
+  scale?: OnetScaleReference
+  ratingCategory?: OnetRatingCategoryReference
+  dataValue?: number
+  n?: number
+  standardError?: number
+  lowerCiBound?: number
+  upperCiBound?: number
+  recommendSuppress?: 'Y' | 'N'
+  notRelevant?: 'Y' | 'N'
+  dateUpdated?: string
+  domainSource?: string
+}
 
 export type OnetWorkStyleItem = {
-  _type: "onetWorkStyleItem";
-  element?: OnetContentModelElementReference;
-  scale?: OnetScaleReference;
-  dataValue?: number;
-  dateUpdated?: string;
-  domainSource?: string;
-};
+  _type: 'onetWorkStyleItem'
+  element?: OnetContentModelElementReference
+  scale?: OnetScaleReference
+  dataValue?: number
+  dateUpdated?: string
+  domainSource?: string
+}
 
 export type OnetSoftwareSkillItem = {
-  _type: "onetSoftwareSkillItem";
-  workplaceExample?: string;
-  element?: OnetContentModelElementReference;
-  hotTechnology?: "Y" | "N";
-  inDemand?: "Y" | "N";
-};
+  _type: 'onetSoftwareSkillItem'
+  workplaceExample?: string
+  element?: OnetContentModelElementReference
+  hotTechnology?: 'Y' | 'N'
+  inDemand?: 'Y' | 'N'
+}
 
 export type OnetJobTitleItem = {
-  _type: "onetJobTitleItem";
-  jobTitle?: string;
-  shortTitle?: string;
-  sources?: string;
-};
+  _type: 'onetJobTitleItem'
+  jobTitle?: string
+  shortTitle?: string
+  sources?: string
+}
 
 export type OnetTaskItem = {
-  _type: "onetTaskItem";
-  taskId?: number;
-  task?: string;
-  taskType?: "Core" | "Supplemental";
-  incumbentsResponding?: number;
-  dateUpdated?: string;
-  domainSource?: string;
-};
+  _type: 'onetTaskItem'
+  taskId?: number
+  task?: string
+  taskType?: 'Core' | 'Supplemental'
+  incumbentsResponding?: number
+  dateUpdated?: string
+  domainSource?: string
+}
 
 export type OnetJobZoneReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "onetJobZone";
-};
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'onetJobZone'
+}
 
 export type OnetOccupation = {
-  _id: string;
-  _type: "onetOccupation";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  importKey?: string;
-  onetsocCode?: string;
-  title?: string;
-  description?: string;
-  jobZone?: OnetJobZoneReference;
+  _id: string
+  _type: 'onetOccupation'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  importKey?: string
+  onetsocCode?: string
+  title?: string
+  description?: string
+  jobZone?: OnetJobZoneReference
   tasks?: Array<
     {
-      _key: string;
+      _key: string
     } & OnetTaskItem
-  >;
+  >
   jobTitles?: Array<
     {
-      _key: string;
+      _key: string
     } & OnetJobTitleItem
-  >;
+  >
   softwareSkills?: Array<
     {
-      _key: string;
+      _key: string
     } & OnetSoftwareSkillItem
-  >;
+  >
   workStyles?: Array<
     {
-      _key: string;
+      _key: string
     } & OnetWorkStyleItem
-  >;
+  >
   ratings?: Array<
     {
-      _key: string;
+      _key: string
     } & OnetRatingItem
-  >;
+  >
   relatedOccupations?: Array<
     {
-      _key: string;
+      _key: string
     } & OnetRelatedOccupationItem
-  >;
-};
+  >
+  interestProfile?: {
+    riasec?: {
+      realistic?: number
+      investigative?: number
+      artistic?: number
+      social?: number
+      enterprising?: number
+      conventional?: number
+    }
+    highPoints?: Array<string>
+    areas?: Array<
+      {
+        _key: string
+      } & OnetInterestAreaScore
+    >
+  }
+}
+
+export type OnetInterest = {
+  _id: string
+  _type: 'onetInterest'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  importKey?: string
+  element?: OnetContentModelElementReference
+  elementId?: string
+  name?: string
+  kind?: 'careerType' | 'specificArea'
+  code?: string
+  description?: string
+  careerTypes?: Array<
+    {
+      _key: string
+    } & OnetInterestReference
+  >
+  keywords?: Array<{
+    keyword?: string
+    keywordType?: 'Action' | 'Object'
+    _type: 'onetInterestKeyword'
+    _key: string
+  }>
+  activities?: Array<string>
+  illustrativeOccupations?: Array<
+    {
+      _key: string
+    } & OnetOccupationReference
+  >
+}
 
 export type OnetLevelScaleAnchor = {
-  _id: string;
-  _type: "onetLevelScaleAnchor";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  importKey?: string;
-  element?: OnetContentModelElementReference;
-  scale?: OnetScaleReference;
-  anchorValue?: number;
-  anchorDescription?: string;
-};
+  _id: string
+  _type: 'onetLevelScaleAnchor'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  importKey?: string
+  element?: OnetContentModelElementReference
+  scale?: OnetScaleReference
+  anchorValue?: number
+  anchorDescription?: string
+}
 
 export type OnetRatingCategory = {
-  _id: string;
-  _type: "onetRatingCategory";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  importKey?: string;
-  categoryDomain?: "education" | "workContext";
-  element?: OnetContentModelElementReference;
-  scale?: OnetScaleReference;
-  category?: number;
-  categoryDescription?: string;
-};
+  _id: string
+  _type: 'onetRatingCategory'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  importKey?: string
+  categoryDomain?: 'education' | 'workContext'
+  element?: OnetContentModelElementReference
+  scale?: OnetScaleReference
+  category?: number
+  categoryDescription?: string
+}
 
 export type OnetJobZone = {
-  _id: string;
-  _type: "onetJobZone";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  importKey?: string;
-  jobZone?: number;
-  name?: string;
-  experience?: string;
-  education?: string;
-  jobTraining?: string;
-  examples?: string;
-  svpRange?: string;
-};
+  _id: string
+  _type: 'onetJobZone'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  importKey?: string
+  jobZone?: number
+  name?: string
+  experience?: string
+  education?: string
+  jobTraining?: string
+  examples?: string
+  svpRange?: string
+}
 
 export type OnetScale = {
-  _id: string;
-  _type: "onetScale";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  importKey?: string;
-  scaleId?: string;
-  scaleName?: string;
-  minimum?: number;
-  maximum?: number;
-};
+  _id: string
+  _type: 'onetScale'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  importKey?: string
+  scaleId?: string
+  scaleName?: string
+  minimum?: number
+  maximum?: number
+}
 
 export type OnetContentModelElement = {
-  _id: string;
-  _type: "onetContentModelElement";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  importKey?: string;
-  elementId?: string;
-  elementName?: string;
-  description?: string;
-};
+  _id: string
+  _type: 'onetContentModelElement'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  importKey?: string
+  elementId?: string
+  elementName?: string
+  description?: string
+}
 
 export type SanityAgentContext = {
-  _id: string;
-  _type: "sanity.agentContext";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  version?: string;
-  name?: string;
-  slug?: Slug;
-  groqFilter?: string;
-  instructions?: string;
-};
+  _id: string
+  _type: 'sanity.agentContext'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  version?: string
+  name?: string
+  slug?: Slug
+  groqFilter?: string
+  instructions?: string
+}
 
 export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
+  _type: 'slug'
+  current?: string
+  source?: string
+}
 
 export type SanityImagePaletteSwatch = {
-  _type: "sanity.imagePaletteSwatch";
-  background?: string;
-  foreground?: string;
-  population?: number;
-  title?: string;
-};
+  _type: 'sanity.imagePaletteSwatch'
+  background?: string
+  foreground?: string
+  population?: number
+  title?: string
+}
 
 export type SanityImagePalette = {
-  _type: "sanity.imagePalette";
-  darkMuted?: SanityImagePaletteSwatch;
-  lightVibrant?: SanityImagePaletteSwatch;
-  darkVibrant?: SanityImagePaletteSwatch;
-  vibrant?: SanityImagePaletteSwatch;
-  dominant?: SanityImagePaletteSwatch;
-  lightMuted?: SanityImagePaletteSwatch;
-  muted?: SanityImagePaletteSwatch;
-};
+  _type: 'sanity.imagePalette'
+  darkMuted?: SanityImagePaletteSwatch
+  lightVibrant?: SanityImagePaletteSwatch
+  darkVibrant?: SanityImagePaletteSwatch
+  vibrant?: SanityImagePaletteSwatch
+  dominant?: SanityImagePaletteSwatch
+  lightMuted?: SanityImagePaletteSwatch
+  muted?: SanityImagePaletteSwatch
+}
 
 export type SanityImageDimensions = {
-  _type: "sanity.imageDimensions";
-  height?: number;
-  width?: number;
-  aspectRatio?: number;
-};
+  _type: 'sanity.imageDimensions'
+  height?: number
+  width?: number
+  aspectRatio?: number
+}
 
 export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  thumbHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
-};
+  _type: 'sanity.imageMetadata'
+  location?: Geopoint
+  dimensions?: SanityImageDimensions
+  palette?: SanityImagePalette
+  lqip?: string
+  blurHash?: string
+  thumbHash?: string
+  hasAlpha?: boolean
+  isOpaque?: boolean
+}
 
 export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
+  _type: 'sanity.imageHotspot'
+  x?: number
+  y?: number
+  height?: number
+  width?: number
+}
 
 export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
+  _type: 'sanity.imageCrop'
+  top?: number
+  bottom?: number
+  left?: number
+  right?: number
+}
 
 export type SanityFileAsset = {
-  _id: string;
-  _type: "sanity.fileAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  source?: SanityAssetSourceData;
-};
+  _id: string
+  _type: 'sanity.fileAsset'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  originalFilename?: string
+  label?: string
+  title?: string
+  description?: string
+  altText?: string
+  sha1hash?: string
+  extension?: string
+  mimeType?: string
+  size?: number
+  assetId?: string
+  uploadId?: string
+  path?: string
+  url?: string
+  source?: SanityAssetSourceData
+}
 
 export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
+  _type: 'sanity.assetSourceData'
+  name?: string
+  id?: string
+  url?: string
+}
 
 export type SanityImageAsset = {
-  _id: string;
-  _type: "sanity.imageAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  metadata?: SanityImageMetadata;
-  source?: SanityAssetSourceData;
-};
+  _id: string
+  _type: 'sanity.imageAsset'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  originalFilename?: string
+  label?: string
+  title?: string
+  description?: string
+  altText?: string
+  sha1hash?: string
+  extension?: string
+  mimeType?: string
+  size?: number
+  assetId?: string
+  uploadId?: string
+  path?: string
+  url?: string
+  metadata?: SanityImageMetadata
+  source?: SanityAssetSourceData
+}
 
 export type Geopoint = {
-  _type: "geopoint";
-  lat?: number;
-  lng?: number;
-  alt?: number;
-};
+  _type: 'geopoint'
+  lat?: number
+  lng?: number
+  alt?: number
+}
 
 export type AllSanitySchemaTypes =
   | CoachingGuide
+  | OnetInterestReference
+  | OnetInterestAreaScore
   | OnetOccupationReference
   | OnetRelatedOccupationItem
   | OnetContentModelElementReference
@@ -406,6 +471,7 @@ export type AllSanitySchemaTypes =
   | OnetTaskItem
   | OnetJobZoneReference
   | OnetOccupation
+  | OnetInterest
   | OnetLevelScaleAnchor
   | OnetRatingCategory
   | OnetJobZone
@@ -422,4 +488,4 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint;
+  | Geopoint

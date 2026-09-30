@@ -210,7 +210,7 @@ function StatusChip({ part }: { part: ToolPart }) {
 }
 
 function SetupForm({ disabled, onStart }: { disabled: boolean; onStart: (setup: SetupMetadata) => void }) {
-	const [job, setJob] = useState('');
+	const [job, setJob] = useState(() => new URLSearchParams(window.location.search).get('job') ?? '');
 	const [count, setCount] = useState(5);
 	const [focus, setFocus] = useState<Focus>('mixed');
 

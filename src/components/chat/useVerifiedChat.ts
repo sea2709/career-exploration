@@ -1,5 +1,5 @@
 import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
+import { DefaultChatTransport, type ChatInit, type UIMessage } from 'ai';
 import { useEffect, useMemo, useState } from 'react';
 
 /** Re-verify this long before the server-side session expires so sends don't race the cookie expiry. */
@@ -9,7 +9,7 @@ const REVERIFY_MARGIN_MS = 60_000;
  * `useChat` against one of the proxied agent routes, plus the Turnstile human-session state.
  * Render `HumanCheck` with `onVerified` while `verified` is false.
  */
-export function useVerifiedChat(api: string) {
+export function useVerifiedChat(api: string, options: Omit<ChatInit<UIMessage>, 'transport'> = {}) {
 	const [humanUntil, setHumanUntil] = useState<number | null>(null);
 	const transport = useMemo(
 		() =>
@@ -23,7 +23,7 @@ export function useVerifiedChat(api: string) {
 			}),
 		[api],
 	);
-	const chat = useChat({ transport });
+	const chat = useChat({ ...options, transport });
 
 	useEffect(() => {
 		if (humanUntil === null) return;
