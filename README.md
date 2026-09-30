@@ -1,13 +1,124 @@
-# Astro with Tailwind
+# Career Explorer (web)
 
-```sh
-npm create astro@latest -- --template with-tailwindcss
+Astro frontend for the careers-exploration project. It serves a single-page chat UI where visitors ask about careers and a Gemini-powered agent answers with O\*NET 31.0 data stored in Sanity.
+
+The browser never talks to the agent directly. Requests go through this app's server routes, which enforce a Cloudflare Turnstile human check and attach the agent's bearer token server-side.
+
+```
+Browser (CareerChat)
+  ├─ POST /api/verify-human  { token }  → Cloudflare siteverify → sets human_session cookie
+  └─ POST /api/chat          (AI SDK UI message stream)
+        → requires valid human_session cookie
+        → forwards to AGENT_URL/chat with Authorization: Bearer AGENT_API_TOKEN
+        → streams the agent's response back
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/with-tailwindcss/devcontainer.json)
+## Stack
 
-Astro comes with [Tailwind](https://tailwindcss.com) support out of the box. This example showcases how to style your Astro project with Tailwind.
+- [Astro 7](https://docs.astro.build) with on-demand rendering for the API routes
+- React 19 islands (`client:only="react"`)
+- [AI SDK](https://ai-sdk.dev) (`ai`, `@ai-sdk/react`) for the chat stream and tool-call parts
+- Tailwind CSS 4 via `@tailwindcss/vite`
+- `react-markdown` for rendering assistant replies
+- [Cloudflare Turnstile](https://developers.cloudflare.com/turnstile/) for bot protection
+- `@sanity/astro` integration, with generated schema types in `sanity.types.ts`
+- Adapters: `@astrojs/node` (standalone) locally, `@astrojs/vercel` when `VERCEL` is set
 
-For complete setup instructions, please see our [Tailwind Styling Guide](https://docs.astro.build/en/guides/styling/#tailwind).
+## Getting started
+
+Requires Node `>=22.12.0`.
+
+1. Install dependencies:
+
+   ```sh
+   npm install
+   ```
+
+2. Create `.env` from the example and fill it in:
+
+   ```sh
+   cp .env.example .env
+   ```
+
+3. Start the agent service in `../agent` (it listens on `http://localhost:8787` by default):
+
+   ```sh
+   cd ../agent && npm run dev
+   ```
+
+4. Start the web dev server (defaults to `http://localhost:4321`):
+
+   ```sh
+   npm run dev
+   ```
+
+## Environment variables
+
+Env vars are declared with `envField` in `astro.config.mjs` and read through `astro:env/server` and `astro:env/client`.
+
+| Variable                    | Context         | Required | Default                 |
+| --------------------------- | --------------- | -------- | ----------------------- |
+| `AGENT_URL`                 | server          | no       | `http://localhost:8787` |
+| `AGENT_API_TOKEN`           | server (secret) | yes      | none                    |
+| `TURNSTILE_SECRET_KEY`      | server (secret) | yes      | none                    |
+| `PUBLIC_TURNSTILE_SITE_KEY` | client          | yes      | none                    |
+| `PUBLIC_SANITY_PROJECT_ID`  | client          | no       | `rhq335ze`              |
+| `PUBLIC_SANITY_DATASET`     | client          | no       | `production`            |
+
+Notes:
+
+- `AGENT_API_TOKEN` must match `AGENT_API_TOKEN` in `agent/.env`.
+- `TURNSTILE_SECRET_KEY` also signs the `human_session` cookie, so rotating it invalidates every active session.
+- For local development you can use Cloudflare's [always-pass test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/) (listed in `.env.example`). Never deploy them, because they accept every request.
+- The agent only allows CORS from its `ALLOWED_ORIGINS` (default `http://localhost:4321`). That doesn't matter for the server-side proxy, but keep it in mind if you change ports.
+
+## Project structure
+
+```
+src/
+├── components/
+│   ├── CareerChat.tsx       # Chat UI: useChat, suggestions, tool-call chips, markdown replies
+│   ├── HumanCheck.tsx       # Loads Turnstile, exchanges the token at /api/verify-human
+│   └── Button.astro         # Starter-template leftover (unused)
+├── layouts/
+│   └── main.astro           # Layout for markdown pages
+├── lib/
+│   └── human-verification.ts  # Turnstile siteverify + HMAC-signed session cookie
+├── pages/
+│   ├── index.astro          # Mounts <CareerChat client:only="react" />
+│   ├── markdown-page.md     # Starter-template leftover
+│   └── api/
+│       ├── chat.ts          # Proxy to the agent service
+│       └── verify-human.ts  # Turnstile token → human_session cookie
+└── styles/global.css        # Tailwind entry point
+sanity.types.ts              # Generated by Sanity TypeGen from ../studio (do not edit)
+```
+
+## How the human check works
+
+1. `HumanCheck` renders an invisible-unless-needed Turnstile widget (`appearance: 'interaction-only'`, `action: 'chat'`).
+2. On success it posts the token to `/api/verify-human`, which validates it with Cloudflare's siteverify endpoint.
+3. The server sets an `HttpOnly`, `SameSite=Strict` cookie named `human_session`, scoped to `/api` and valid for 2 hours. The value is `<expiresAt>.<HMAC-SHA256 signature>`.
+4. `/api/chat` rejects requests without a valid session with `403`.
+5. `CareerChat` disables input until verified, re-runs the check 60 seconds before the session expires, and re-runs it on any `403` from `/api/chat`.
+
+## Commands
+
+| Command             | Action                                          |
+| ------------------- | ----------------------------------------------- |
+| `npm run dev`       | Start the dev server at `localhost:4321`        |
+| `npm run build`     | Build for production to `./dist/`               |
+| `npm run preview`   | Preview the production build locally            |
+| `npx astro check`   | Type-check `.astro`, `.ts`, and `.tsx` files    |
+
+## Regenerating Sanity types
+
+`sanity.types.ts` is written by the studio's TypeGen config (`studio/sanity.cli.ts`). After changing schemas, run this from `../studio`:
+
+```sh
+npm run typegen
+```
+
+## Deployment
+
+The adapter is chosen at build time: when the `VERCEL` env var is present (as it is on Vercel builds), `@astrojs/vercel` is used; otherwise the app builds as a standalone Node server with `@astrojs/node`. Set `AGENT_URL`, `AGENT_API_TOKEN`, `TURNSTILE_SECRET_KEY`, and `PUBLIC_TURNSTILE_SITE_KEY` in the hosting environment, and register the production domain on the Turnstile widget.
