@@ -1,5 +1,6 @@
 import { getToolName, isToolUIPart } from 'ai';
 import { useEffect, useRef, useState } from 'react';
+import type { Components } from 'react-markdown';
 import HumanCheck from './HumanCheck';
 import MarkdownText from './chat/MarkdownText';
 import { useVerifiedChat } from './chat/useVerifiedChat';
@@ -38,6 +39,36 @@ function ToolChip({ part }: { part: Parameters<typeof getToolName>[0] }) {
 		</div>
 	);
 }
+
+const ONET_LINK = /onetonline\.org\/link\/summary\/\d{2}-\d{4}\.\d{2}/;
+const TRAILING_CODE = /\s*\(\d{2}-\d{4}\.\d{2}\)\s*$/;
+
+type HastNode = { type: string; value?: string; children?: HastNode[] };
+
+function hastText(node: HastNode): string {
+	return node.value ?? node.children?.map(hastText).join('') ?? '';
+}
+
+const MARKDOWN_COMPONENTS: Components = {
+	a: ({ node, ...props }) => {
+		const link = <a {...props} target="_blank" rel="noreferrer" />;
+		const job = node && ONET_LINK.test(props.href ?? '') ? hastText(node).replace(TRAILING_CODE, '').trim() : '';
+		if (!job) return link;
+		return (
+			<>
+				{link}
+				<a
+					href={`/interview?job=${encodeURIComponent(job)}`}
+					target="_blank"
+					rel="noreferrer"
+					className="ml-2 inline-block rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 align-middle text-xs font-medium no-underline! hover:bg-blue-100"
+				>
+					Practice mock interview
+				</a>
+			</>
+		);
+	},
+};
 
 export default function CareerChat() {
 	const { messages, sendMessage, status, error, stop, busy, verified, onVerified } = useVerifiedChat('/api/chat');
@@ -93,7 +124,7 @@ export default function CareerChat() {
 									return message.role === 'user' ? (
 										<p key={i}>{part.text}</p>
 									) : (
-										<MarkdownText key={i} text={part.text} />
+										<MarkdownText key={i} text={part.text} components={MARKDOWN_COMPONENTS} />
 									);
 								}
 								if (isToolUIPart(part)) {
