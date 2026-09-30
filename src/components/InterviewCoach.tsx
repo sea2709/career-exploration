@@ -52,6 +52,8 @@ const READINESS: Record<InterviewReport['readiness'], { label: string; className
 const PREP_LABELS: Record<string, string> = {
 	searchOccupations: 'Finding the role',
 	getInterviewBrief: 'Reading O*NET interview brief',
+	initial_context: 'Reading coaching outline',
+	knowledge_base_read: 'Reading coaching guidance',
 	scoreAnswer: 'Scoring your answer',
 	finishInterview: 'Writing your report',
 };
@@ -194,8 +196,8 @@ function ReportCard({ report }: { report: InterviewReport }) {
 function StatusChip({ part }: { part: ToolPart }) {
 	const done = part.state === 'output-available';
 	const failed = part.state === 'output-error';
-	const input = part.input as { query?: string; code?: string } | undefined;
-	const detail = input?.query ?? input?.code;
+	const input = part.input as { query?: string; code?: string; path?: string } | undefined;
+	const detail = input?.query ?? input?.code ?? input?.path;
 	return (
 		<div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-600">
 			<span

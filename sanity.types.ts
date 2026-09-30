@@ -15,6 +15,40 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type CoachingGuide = {
+  _id: string;
+  _type: "coachingGuide";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  category?:
+    | "answering"
+    | "behavioral"
+    | "skills"
+    | "workStyles"
+    | "grading"
+    | "feedback"
+    | "situations"
+    | "practice";
+  jobZones?: Array<number>;
+  summary?: string;
+  body?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h3";
+    listItem?: "bullet";
+    markDefs?: null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+};
+
 export type OnetOccupationReference = {
   _ref: string;
   _type: "reference";
@@ -226,6 +260,25 @@ export type OnetContentModelElement = {
   description?: string;
 };
 
+export type SanityAgentContext = {
+  _id: string;
+  _type: "sanity.agentContext";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  version?: string;
+  name?: string;
+  slug?: Slug;
+  groqFilter?: string;
+  instructions?: string;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
   background?: string;
@@ -339,13 +392,8 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type AllSanitySchemaTypes =
+  | CoachingGuide
   | OnetOccupationReference
   | OnetRelatedOccupationItem
   | OnetContentModelElementReference
@@ -363,6 +411,8 @@ export type AllSanitySchemaTypes =
   | OnetJobZone
   | OnetScale
   | OnetContentModelElement
+  | SanityAgentContext
+  | Slug
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -372,5 +422,4 @@ export type AllSanitySchemaTypes =
   | SanityFileAsset
   | SanityAssetSourceData
   | SanityImageAsset
-  | Geopoint
-  | Slug;
+  | Geopoint;
