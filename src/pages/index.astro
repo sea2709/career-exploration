@@ -1,8 +1,172 @@
 ---
-import CareerChat from '../components/CareerChat';
 import AppLayout from '../layouts/AppLayout.astro';
+
+const stats = [
+	{ value: '1,016', label: 'O*NET-SOC occupations' },
+	{ value: '923', label: 'with full task, skill, and interest ratings' },
+	{ value: '6', label: 'RIASEC career types, plus 41 specific interest areas' },
+];
+
+const features = [
+	{
+		step: 1,
+		title: 'Interest Quiz',
+		href: '/quiz',
+		cta: 'Take the quiz',
+		pitch: 'Not sure where to start? Find out which kinds of work you actually enjoy.',
+		how: [
+			'Rate short work activities on the same 5-point like/dislike scale the O*NET Interest Profiler uses.',
+			'A broad round covers all six career types, then a focused round narrows in on your strongest two.',
+			'Your answers become a RIASEC profile (Realistic, Investigative, Artistic, Social, Enterprising, Conventional).',
+			'That profile is matched against the interest ratings O*NET publishes for every occupation.',
+		],
+		data: ['Interest Profiler activities', 'RIASEC career types', 'Occupation interest profiles', 'Job Zones'],
+	},
+	{
+		step: 2,
+		title: 'Career Explorer',
+		href: '/explore',
+		cta: 'Start exploring',
+		pitch: 'Chat with an AI career advisor that looks things up instead of guessing.',
+		how: [
+			'Ask in plain language: what a job involves, what fits your interests, or how to switch careers.',
+			'The advisor searches occupations by title, alternate job titles, and description.',
+			'It reads full occupation profiles and can compare two careers side by side or find related ones.',
+			'Each occupation it cites links back to its summary on O*NET OnLine so you can verify it.',
+		],
+		data: ['Tasks', 'Skills, knowledge, and abilities', 'Education and Job Zones', 'Hot technologies', 'Related occupations'],
+	},
+	{
+		step: 3,
+		title: 'Mock Interview',
+		href: '/interview',
+		cta: 'Practice an interview',
+		pitch: 'Rehearse for a real occupation and get feedback tied to what the job requires.',
+		how: [
+			'Pick an occupation. The coach builds questions from its core tasks and most important competencies.',
+			'Each answer is scored on the O*NET 0–7 Level scale and compared with the level the job needs.',
+			'Grading uses O*NET Level Scale Anchors, concrete examples of what each level looks like.',
+			'Finish with a report of your strengths and the skills to work on next.',
+		],
+		data: ['Core tasks', 'Skill importance and level', 'Level Scale Anchors', 'Work activities', 'Work styles'],
+	},
+];
 ---
 
-<AppLayout title="Career Explorer">
-	<CareerChat client:only="react" />
+<AppLayout title="Introduction">
+	<div class="h-full overflow-y-auto">
+		<div class="mx-auto max-w-3xl space-y-12 px-4 py-10">
+			<header class="space-y-4">
+				<span
+					class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700"
+				>
+					<span class="size-2 rounded-full bg-emerald-500"></span>
+					Powered by O*NET 31.0
+				</span>
+				<h1 class="text-3xl font-semibold text-slate-900 sm:text-4xl">
+					Explore careers with real occupational data
+				</h1>
+				<p class="text-slate-600">
+					This site has three AI tools to help you find, understand, and prepare for a career. Their
+					answers come from the O*NET database, not from the model's memory.
+				</p>
+			</header>
+
+			<section class="space-y-5 rounded-2xl border border-slate-200 bg-slate-50 p-6">
+				<div class="space-y-2">
+					<h2 class="text-lg font-semibold text-slate-900">What is O*NET?</h2>
+					<p class="text-sm text-slate-600">
+						The <a
+							href="https://www.onetcenter.org/overview.html"
+							class="font-medium text-slate-900 underline underline-offset-2 hover:text-slate-600"
+							>Occupational Information Network (O*NET)</a
+						> is the U.S. Department of Labor's main source of occupational information. For each occupation,
+						it collects survey data from workers and analysts on the tasks performed, the skills and knowledge
+						required, the education typical for the job, and the interests of the people who do it.
+					</p>
+					<p class="text-sm text-slate-600">
+						We load the O*NET 31.0 database into our content store. When a tool describes a job, scores
+						an answer, or matches your interests, it's reading those ratings.
+					</p>
+				</div>
+				<dl class="grid gap-3 sm:grid-cols-3">
+					{
+						stats.map(({ value, label }) => (
+							<div class="rounded-xl border border-slate-200 bg-white p-4">
+								<dt class="text-2xl font-semibold text-slate-900">{value}</dt>
+								<dd class="text-xs text-slate-500">{label}</dd>
+							</div>
+						))
+					}
+				</dl>
+			</section>
+
+			<section class="space-y-6">
+				<div class="space-y-1">
+					<h2 class="text-lg font-semibold text-slate-900">The three tools</h2>
+					<p class="text-sm text-slate-600">
+						Use them in any order. If you're just starting out, this order works well.
+					</p>
+				</div>
+
+				<ol class="space-y-4">
+					{
+						features.map(({ step, title, href, cta, pitch, how, data }) => (
+							<li class="space-y-4 rounded-2xl border border-slate-200 p-6">
+								<div class="flex items-start gap-4">
+									<span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+										{step}
+									</span>
+									<div class="space-y-1">
+										<h3 class="text-xl font-semibold text-slate-900">{title}</h3>
+										<p class="text-sm text-slate-600">{pitch}</p>
+									</div>
+								</div>
+
+								<ul class="list-disc space-y-1 pl-16 text-sm text-slate-700">
+									{how.map((line) => (
+										<li>{line}</li>
+									))}
+								</ul>
+
+								<div class="space-y-2 pl-12">
+									<p class="text-xs font-medium tracking-wide text-emerald-700 uppercase">
+										O*NET data behind it
+									</p>
+									<div class="flex flex-wrap gap-2">
+										{data.map((item) => (
+											<span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-800">
+												{item}
+											</span>
+										))}
+									</div>
+								</div>
+
+								<div class="pl-12">
+									<a
+										href={href}
+										class="inline-flex rounded-xl bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-700"
+									>
+										{cta} →
+									</a>
+								</div>
+							</li>
+						))
+					}
+				</ol>
+			</section>
+
+			<footer class="border-t border-slate-200 pt-6 text-xs text-slate-500">
+				This site includes information from the <a
+					href="https://www.onetcenter.org/database.html"
+					class="underline underline-offset-2 hover:text-slate-700">O*NET 31.0 Database</a
+				> by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA). Used under
+				the <a
+					href="https://creativecommons.org/licenses/by/4.0/"
+					class="underline underline-offset-2 hover:text-slate-700">CC BY 4.0</a
+				> license. O*NET® is a trademark of USDOL/ETA. USDOL/ETA has not approved, endorsed, or tested
+				these tools.
+			</footer>
+		</div>
+	</div>
 </AppLayout>

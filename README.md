@@ -1,8 +1,8 @@
 # Career Explorer (web)
 
-Astro frontend for the careers-exploration project. It has three pages, each backed by a Gemini-powered agent that uses O\*NET 31.0 data stored in Sanity:
+Astro frontend for the careers-exploration project. The homepage (`/`) is a static introduction to the three tools and the O\*NET data behind them. Each tool is backed by a Gemini-powered agent that uses O\*NET 31.0 data stored in Sanity:
 
-- `/`: **Career Explorer**, a chat where visitors ask about careers.
+- `/explore`: **Career Explorer**, a chat where visitors ask about careers.
 - `/interview`: **Mock Interview Coach**, which interviews the visitor for a chosen occupation and scores each answer against O\*NET skill levels. `?job=<title>` prefills the target job.
 - `/quiz`: **Interest Quiz**, where visitors rate work activities and get a RIASEC interest profile with matching occupations.
 
@@ -97,7 +97,8 @@ src/
 │   ├── agent-proxy.ts       # proxyToAgent: human-session check + authenticated forward to the agent
 │   └── human-verification.ts  # Turnstile siteverify + HMAC-signed session cookie
 ├── pages/
-│   ├── index.astro          # Mounts <CareerChat client:only="react" />
+│   ├── index.astro          # Static introduction page (homepage)
+│   ├── explore.astro        # Mounts <CareerChat client:only="react" />
 │   ├── interview.astro      # Mounts <InterviewCoach client:only="react" />
 │   ├── quiz.astro           # Mounts <InterestQuiz client:only="react" />
 │   ├── markdown-page.md     # Starter-template leftover

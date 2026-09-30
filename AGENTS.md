@@ -1,6 +1,6 @@
 # web/ — Career Explorer frontend
 
-Astro 7 + React 19 UI with three agent-backed pages (Career Explorer at `/`, Mock Interview Coach at `/interview`, Interest Quiz at `/quiz`) that proxy to the agent service in `../agent`. See `README.md` for setup and architecture.
+Astro 7 + React 19 UI with a static introduction homepage at `/` and three agent-backed pages (Career Explorer at `/explore`, Mock Interview Coach at `/interview`, Interest Quiz at `/quiz`) that proxy to the agent service in `../agent`. See `README.md` for setup and architecture.
 
 ## Development
 
@@ -18,7 +18,8 @@ Type-check with `npx astro check`. There is no test suite or lint script.
 
 ## Layout
 
-- `src/pages/index.astro` mounts `CareerChat`, `src/pages/interview.astro` mounts `InterviewCoach`, and `src/pages/quiz.astro` mounts `InterestQuiz`, all with `client:only="react"` inside `layouts/AppLayout.astro` (page shell and nav). There is no SSR of the chat UIs. Add new tools to the `links` list in `AppLayout.astro`.
+- `src/pages/index.astro` is the static introduction page (plain Astro, no client JS). Its `features` list describes each tool and the O\*NET data it uses; update it when a tool's behavior changes.
+- `src/pages/explore.astro` mounts `CareerChat`, `src/pages/interview.astro` mounts `InterviewCoach`, and `src/pages/quiz.astro` mounts `InterestQuiz`, all with `client:only="react"` inside `layouts/AppLayout.astro` (page shell and nav). There is no SSR of the chat UIs. Add new tools to the `links` list in `AppLayout.astro`.
 - `src/components/chat/useVerifiedChat.ts` wraps `useChat` from `@ai-sdk/react` with a `DefaultChatTransport` for a given API route plus the human-session state. Every page uses it; extra `useChat` options (like `sendAutomaticallyWhen`) go in its second argument.
 - `src/components/CareerChat.tsx` renders text parts with `chat/MarkdownText.tsx` and tool-call parts as chips.
 - `src/components/InterviewCoach.tsx` renders a setup form, then renders `scoreAnswer` and `finishInterview` tool outputs as feedback and report cards. It prefills the job from `?job=`.
