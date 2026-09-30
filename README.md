@@ -1,0 +1,99 @@
+# Careers Exploration
+
+A career exploration app built on the O\*NET 31.0 dataset stored in Sanity. Visitors can chat about careers, practice mock interviews scored against O\*NET skill levels, and take a RIASEC interest quiz that matches them to occupations. Each experience is backed by a Gemini agent.
+
+This folder is a workspace that holds three independent apps plus a small amount of shared Sanity infrastructure.
+
+```
+Browser ──▶ web (Astro, :4321) ──/api/*──▶ agent (Node, :8787) ──▶ Gemini
+                                                │
+                                                ├─ GROQ ─────────▶ Sanity dataset (O*NET)
+                                                ├─ Context MCP ──▶ Sanity Context
+                                                └─ Insights ─────▶ org Context store
+                                                                        ▲
+studio (Sanity Studio, :3333) ── schemas, O*NET import, coaching guides  │
+root functions/ ── weekly classify-conversations job ────────────────────┘
+```
+
+## Repositories
+
+`web/`, `agent/`, and `studio/` are separate git repos with their own remotes. The root repo ignores them and only tracks the shared files listed below.
+
+| Folder    | What it is                                                         | Remote                                                                        | Default branch |
+| --------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------- | -------------- |
+| `web/`    | Astro 7 + React 19 frontend: Career Explorer, Interview Coach, Quiz | [career-exploration](https://github.com/sea2709/career-exploration)            | `master`       |
+| `agent/`  | Node HTTP service running the Gemini `ToolLoopAgent`s              | [career-exploration-agent](https://github.com/sea2709/career-exploration-agent) | `main`         |
+| `studio/` | Sanity Studio: schemas, O\*NET importer, coaching Knowledge Base   | [career-exploration-studio](https://github.com/sea2709/career-exploration-studio) | `main`         |
+
+The root repo contains:
+
+- `functions/classify-conversations/`: a scheduled Sanity Function that classifies Conversation Insights transcripts written by the agent.
+- `sanity.blueprint.ts`: the Blueprint that deploys that function (Mondays at 06:00 Central).
+- `.cursor/rules/`: editor agent rules for the whole workspace.
+- `AGENTS.md`: cross-repo guidance for coding agents.
+
+## Getting started
+
+Requires Node `>=22.18.0`.
+
+1. Clone this repo, then clone the three apps into it:
+
+   ```sh
+   git clone https://github.com/sea2709/career-exploration.git web
+   git clone https://github.com/sea2709/career-exploration-agent.git agent
+   git clone https://github.com/sea2709/career-exploration-studio.git studio
+   ```
+
+2. In each app, install dependencies and create `.env` from its example:
+
+   ```sh
+   cd agent && npm install && cp .env.example .env
+   ```
+
+   `AGENT_API_TOKEN` must be the same in `agent/.env` and `web/.env`. Generate it with `openssl rand -base64 32`.
+
+3. Start the agent and the web app in separate terminals:
+
+   ```sh
+   cd agent && npm run dev   # http://localhost:8787
+   cd web && npm run dev     # http://localhost:4321
+   ```
+
+4. Optionally, run the Studio to edit content:
+
+   ```sh
+   cd studio && npm run dev  # http://localhost:3333
+   ```
+
+See each app's `README.md` for its environment variables, architecture, and commands.
+
+## Shared Sanity function
+
+The root `package.json` manages the `classify-conversations` function.
+
+1. Install dependencies and create `.env`:
+
+   ```sh
+   npm install
+   cp .env.example .env
+   ```
+
+   Fill in `GOOGLE_GENERATIVE_AI_API_KEY` and `SANITY_INSIGHTS_TOKEN`. `SANITY_CONTEXT_ENDPOINT_NAME` must match the value the agent uses.
+
+2. Use these commands:
+
+   | Command                  | Action                                                 |
+   | ------------------------ | ------------------------------------------------------ |
+   | `npm run test:functions` | Run the function locally against real data             |
+   | `npm run plan`           | Preview the Blueprint changes that a deploy would make |
+   | `npm run deploy`         | Deploy the Blueprint (uses `pnpm` to install the function) |
+
+`.sanity/` links this folder to its deployed Blueprint stack. It's machine-local and ignored by git.
+
+## Sanity project
+
+| Setting      | Value        |
+| ------------ | ------------ |
+| Project ID   | `rhq335ze`   |
+| Dataset      | `production` |
+| Organization | `opj96zyhx`  |
