@@ -302,8 +302,19 @@ function SetupForm({ disabled, onStart }: { disabled: boolean; onStart: (setup: 
 				</p>
 			</div>
 
-			<fieldset className="space-y-2">
+			<fieldset className="space-y-2" aria-describedby="preparation-help">
 				<legend className="text-sm font-medium text-slate-900">How much preparation are you open to?</legend>
+				<div id="preparation-help" className="space-y-1 text-xs text-slate-500">
+					<p>
+						Pick the most school or training you'd be willing to complete for the right career, not what you have
+						today. Careers that usually need more than that are left out of your matches. Your activity ratings are
+						scored the same either way.
+					</p>
+					<p>
+						Levels follow O*NET's Job Zones, from 1 (little or no preparation) to 5 (usually a graduate degree). Not
+						sure? Keep “Any amount” to see everything.
+					</p>
+				</div>
 				<div className="grid gap-2 sm:grid-cols-2">
 					{PREPARATION.map((o) => (
 						<button
