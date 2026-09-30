@@ -1,11 +1,8 @@
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport, getToolName, isToolUIPart } from 'ai';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import Markdown from 'react-markdown';
+import { getToolName, isToolUIPart } from 'ai';
+import { useEffect, useRef, useState } from 'react';
 import HumanCheck from './HumanCheck';
-
-/** Re-verify this long before the server-side session expires so sends don't race the cookie expiry. */
-const REVERIFY_MARGIN_MS = 60_000;
+import MarkdownText from './chat/MarkdownText';
+import { useVerifiedChat } from './chat/useVerifiedChat';
 
 const TOOL_LABELS: Record<string, string> = {
 	searchOccupations: 'Searching occupations',
@@ -43,34 +40,13 @@ function ToolChip({ part }: { part: Parameters<typeof getToolName>[0] }) {
 }
 
 export default function CareerChat() {
-	const [humanUntil, setHumanUntil] = useState<number | null>(null);
-	const transport = useMemo(
-		() =>
-			new DefaultChatTransport({
-				api: '/api/chat',
-				fetch: async (input, init) => {
-					const res = await fetch(input, init);
-					if (res.status === 403) setHumanUntil(null);
-					return res;
-				},
-			}),
-		[],
-	);
-	const { messages, sendMessage, status, error, stop } = useChat({ transport });
+	const { messages, sendMessage, status, error, stop, busy, verified, onVerified } = useVerifiedChat('/api/chat');
 	const [input, setInput] = useState('');
 	const bottomRef = useRef<HTMLDivElement>(null);
-	const busy = status === 'submitted' || status === 'streaming';
-	const verified = humanUntil !== null;
 
 	useEffect(() => {
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [messages]);
-
-	useEffect(() => {
-		if (humanUntil === null) return;
-		const timer = setTimeout(() => setHumanUntil(null), humanUntil - Date.now() - REVERIFY_MARGIN_MS);
-		return () => clearTimeout(timer);
-	}, [humanUntil]);
 
 	const send = (text: string) => {
 		if (!text.trim() || busy || !verified) return;
@@ -79,7 +55,7 @@ export default function CareerChat() {
 	};
 
 	return (
-		<div className="mx-auto flex h-dvh max-w-3xl flex-col px-4">
+		<div className="mx-auto flex h-full max-w-3xl flex-col px-4">
 			<header className="py-6">
 				<h1 className="text-2xl font-semibold text-slate-900">Career Explorer</h1>
 				<p className="text-sm text-slate-500">
@@ -117,20 +93,7 @@ export default function CareerChat() {
 									return message.role === 'user' ? (
 										<p key={i}>{part.text}</p>
 									) : (
-										<div
-											key={i}
-											className="space-y-3 leading-relaxed [&_a]:text-blue-700 [&_a]:underline [&_h3]:font-semibold [&_li]:my-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6"
-										>
-											<Markdown
-												components={{
-													a: ({ node: _node, ...props }) => (
-														<a {...props} target="_blank" rel="noreferrer" />
-													),
-												}}
-											>
-												{part.text}
-											</Markdown>
-										</div>
+										<MarkdownText key={i} text={part.text} />
 									);
 								}
 								if (isToolUIPart(part)) {
@@ -151,7 +114,7 @@ export default function CareerChat() {
 				<div ref={bottomRef} />
 			</main>
 
-			{!verified && <HumanCheck onVerified={setHumanUntil} />}
+			{!verified && <HumanCheck onVerified={onVerified} />}
 
 			<form
 				onSubmit={(e) => {

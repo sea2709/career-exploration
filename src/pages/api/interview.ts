@@ -3,4 +3,4 @@ import { proxyToAgent } from '../../lib/agent-proxy';
 
 export const prerender = false;
 
-export const POST: APIRoute = ({ request, cookies }) => proxyToAgent('/chat', request, cookies);
+export const POST: APIRoute = ({ request, cookies }) => proxyToAgent('/interview', request, cookies);
