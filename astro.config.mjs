@@ -6,6 +6,7 @@ import { loadEnv } from 'vite';
 
 import node from '@astrojs/node';
 import react from '@astrojs/react';
+import vercel from '@astrojs/vercel';
 import sanity from '@sanity/astro';
 
 const { PUBLIC_SANITY_PROJECT_ID, PUBLIC_SANITY_DATASET } = loadEnv(
@@ -20,9 +21,7 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	},
 
-	adapter: node({
-		mode: 'standalone',
-	}),
+	adapter: process.env.VERCEL ? vercel() : node({ mode: 'standalone' }),
 
 	integrations: [
 		react(),
