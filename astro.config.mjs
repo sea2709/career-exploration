@@ -35,10 +35,15 @@ export default defineConfig({
 
 	env: {
 		schema: {
-			PUBLIC_AGENT_URL: envField.string({
-				context: 'client',
+			AGENT_URL: envField.string({
+				context: 'server',
 				access: 'public',
 				default: 'http://localhost:8787',
+			}),
+			AGENT_API_TOKEN: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
 			}),
 			PUBLIC_SANITY_PROJECT_ID: envField.string({
 				context: 'client',

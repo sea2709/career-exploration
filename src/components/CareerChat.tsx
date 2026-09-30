@@ -1,10 +1,9 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, getToolName, isToolUIPart } from 'ai';
-import { PUBLIC_AGENT_URL } from 'astro:env/client';
 import { useEffect, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
 
-const transport = new DefaultChatTransport({ api: new URL('/chat', PUBLIC_AGENT_URL).toString() });
+const transport = new DefaultChatTransport({ api: '/api/chat' });
 
 const TOOL_LABELS: Record<string, string> = {
 	searchOccupations: 'Searching occupations',
