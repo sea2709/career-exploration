@@ -1,9 +1,11 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, getToolName, isToolUIPart } from 'ai';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Markdown from 'react-markdown';
+import HumanCheck from './HumanCheck';
 
-const transport = new DefaultChatTransport({ api: '/api/chat' });
+/** Re-verify this long before the server-side session expires so sends don't race the cookie expiry. */
+const REVERIFY_MARGIN_MS = 60_000;
 
 const TOOL_LABELS: Record<string, string> = {
 	searchOccupations: 'Searching occupations',
@@ -41,17 +43,37 @@ function ToolChip({ part }: { part: Parameters<typeof getToolName>[0] }) {
 }
 
 export default function CareerChat() {
+	const [humanUntil, setHumanUntil] = useState<number | null>(null);
+	const transport = useMemo(
+		() =>
+			new DefaultChatTransport({
+				api: '/api/chat',
+				fetch: async (input, init) => {
+					const res = await fetch(input, init);
+					if (res.status === 403) setHumanUntil(null);
+					return res;
+				},
+			}),
+		[],
+	);
 	const { messages, sendMessage, status, error, stop } = useChat({ transport });
 	const [input, setInput] = useState('');
 	const bottomRef = useRef<HTMLDivElement>(null);
 	const busy = status === 'submitted' || status === 'streaming';
+	const verified = humanUntil !== null;
 
 	useEffect(() => {
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [messages]);
 
+	useEffect(() => {
+		if (humanUntil === null) return;
+		const timer = setTimeout(() => setHumanUntil(null), humanUntil - Date.now() - REVERIFY_MARGIN_MS);
+		return () => clearTimeout(timer);
+	}, [humanUntil]);
+
 	const send = (text: string) => {
-		if (!text.trim() || busy) return;
+		if (!text.trim() || busy || !verified) return;
 		sendMessage({ text });
 		setInput('');
 	};
@@ -72,7 +94,8 @@ export default function CareerChat() {
 							<button
 								key={s}
 								onClick={() => send(s)}
-								className="rounded-xl border border-slate-200 p-4 text-left text-sm text-slate-700 hover:border-slate-400 hover:bg-slate-50"
+								disabled={!verified}
+								className="rounded-xl border border-slate-200 p-4 text-left text-sm text-slate-700 hover:border-slate-400 hover:bg-slate-50 disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:bg-transparent"
 							>
 								{s}
 							</button>
@@ -128,6 +151,8 @@ export default function CareerChat() {
 				<div ref={bottomRef} />
 			</main>
 
+			{!verified && <HumanCheck onVerified={setHumanUntil} />}
+
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
@@ -148,7 +173,7 @@ export default function CareerChat() {
 				) : (
 					<button
 						type="submit"
-						disabled={!input.trim()}
+						disabled={!input.trim() || !verified}
 						className="rounded-xl bg-slate-900 px-4 py-2 text-white disabled:opacity-40"
 					>
 						Send
