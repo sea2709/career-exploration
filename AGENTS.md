@@ -15,6 +15,7 @@ Each app has its own `AGENTS.md` with layout, conventions, and commands. Read it
 - **Default branches differ:** `web` uses `master`; `agent` and `studio` use `main`; the root uses `main`.
 - **New branches go in worktrees.** Follow `.cursor/rules/git-worktrees.mdc`: create them under `<app>/.worktrees/`, never with `git checkout -b` in the main checkout.
 - **Never commit `.env` files.** Every repo ignores them; only `.env.example` is tracked.
+- **pnpm only.** Every repo uses pnpm 11 (`pnpm-lock.yaml`); don't run `npm install` or add a `package-lock.json`. pnpm doesn't hoist undeclared packages, so import only what the repo's `package.json` lists. Approve dependency build scripts in that repo's `pnpm-workspace.yaml` (`allowBuilds`). Don't add a `pnpm-workspace.yaml` at the root: pnpm would treat it as the workspace root for the apps that lack their own.
 
 ## Cross-repo contracts
 
@@ -23,7 +24,7 @@ These are the places where a change in one app breaks another. Check the other s
 - **Agent auth token.** `AGENT_API_TOKEN` must match in `agent/.env` and `web/.env`.
 - **Agent tools and UI labels.** Adding or renaming a tool in `agent/src` also requires updating the agent's system prompt and the label map in `web/src/components/` (`TOOL_LABELS` in `CareerChat.tsx`, `PREP_LABELS` in `InterviewCoach.tsx`, `STATUS_LABELS` in `InterestQuiz.tsx`).
 - **Structured tool outputs are mirrored in the UI.** The `scoreAnswer` and `finishInterview` schemas in `agent/src/interview-agent.ts` match the types in `web/src/components/InterviewCoach.tsx`. The quiz tool shapes in `agent/src/quiz-agent.ts` and `agent/src/onet/interests.ts` match the types at the top of `web/src/components/InterestQuiz.tsx`.
-- **Schemas and generated types.** Document types are defined in `studio/schemaTypes`. After changing them, run `npm run typegen` in `studio/`, which writes `web/sanity.types.ts`. Never edit that file by hand. The agent's GROQ queries in `agent/src/onet/` depend on the same schemas.
+- **Schemas and generated types.** Document types are defined in `studio/schemaTypes`. After changing them, run `pnpm typegen` in `studio/`, which writes `web/sanity.types.ts`. Never edit that file by hand. The agent's GROQ queries in `agent/src/onet/` depend on the same schemas.
 - **Insights endpoint name.** `SANITY_CONTEXT_ENDPOINT_NAME` must be the same in `agent/.env` and the root `.env`, or the weekly classifier won't find the agent's transcripts.
 - **O\*NET re-imports.** The agent caches interest data in memory, so restart it after running the Studio importer.
 
@@ -31,8 +32,8 @@ These are the places where a change in one app breaks another. Check the other s
 
 - `functions/classify-conversations/index.ts` is a scheduled handler that classifies Conversation Insights transcripts with Gemini (up to 500 per run, concurrency 5, within the 600-second timeout).
 - `sanity.blueprint.ts` declares the function, its schedule, and its env vars. It reads secrets from the root `.env` at deploy time through `requireEnv`. When you add an env var, add it to the blueprint's `env` block, `.env.example`, and the handler's check.
-- Commands: `npm run test:functions` to run it locally, `npm run plan` to preview, `npm run deploy` to deploy. Deploying needs `pnpm` installed, because of `--fn-installer pnpm`.
-- `npx tsc` type-checks the root (`sanity.blueprint.ts` and `functions/**`). There is no test suite or linter.
+- Commands: `pnpm test:functions` to run it locally, `pnpm plan` to preview, `pnpm run deploy` to deploy (`pnpm deploy` is a built-in pnpm command, so keep `run`).
+- `pnpm exec tsc` type-checks the root (`sanity.blueprint.ts` and `functions/**`). There is no test suite or linter.
 - `.sanity/` links the folder to the deployed Blueprint stack. It's machine-local; don't commit or edit it.
 - Code style at the root and in `studio/`: 2-space indent, single quotes, no semicolons, no bracket spacing, 100-column width (see `prettier` in `package.json`). `web/` and `agent/` use tabs and semicolons instead.
 

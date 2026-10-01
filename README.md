@@ -34,7 +34,7 @@ The root repo contains:
 
 ## Getting started
 
-Requires Node `>=22.18.0`.
+Requires Node `>=22.18.0` and [pnpm](https://pnpm.io/installation) 11. Every repo uses pnpm, so its global store shares packages across the apps and their worktrees.
 
 1. Clone this repo, then clone the three apps into it:
 
@@ -47,7 +47,7 @@ Requires Node `>=22.18.0`.
 2. In each app, install dependencies and create `.env` from its example:
 
    ```sh
-   cd agent && npm install && cp .env.example .env
+   cd agent && pnpm install && cp .env.example .env
    ```
 
    `AGENT_API_TOKEN` must be the same in `agent/.env` and `web/.env`. Generate it with `openssl rand -base64 32`.
@@ -55,14 +55,14 @@ Requires Node `>=22.18.0`.
 3. Start the agent and the web app in separate terminals:
 
    ```sh
-   cd agent && npm run dev   # http://localhost:8787
-   cd web && npm run dev     # http://localhost:4321
+   cd agent && pnpm dev   # http://localhost:8787
+   cd web && pnpm dev     # http://localhost:4321
    ```
 
 4. Optionally, run the Studio to edit content:
 
    ```sh
-   cd studio && npm run dev  # http://localhost:3333
+   cd studio && pnpm dev  # http://localhost:3333
    ```
 
 See each app's `README.md` for its environment variables, architecture, and commands.
@@ -74,7 +74,7 @@ The root `package.json` manages the `classify-conversations` function.
 1. Install dependencies and create `.env`:
 
    ```sh
-   npm install
+   pnpm install
    cp .env.example .env
    ```
 
@@ -82,11 +82,11 @@ The root `package.json` manages the `classify-conversations` function.
 
 2. Use these commands:
 
-   | Command                  | Action                                                 |
-   | ------------------------ | ------------------------------------------------------ |
-   | `npm run test:functions` | Run the function locally against real data             |
-   | `npm run plan`           | Preview the Blueprint changes that a deploy would make |
-   | `npm run deploy`         | Deploy the Blueprint (uses `pnpm` to install the function) |
+   | Command               | Action                                                 |
+   | --------------------- | ------------------------------------------------------ |
+   | `pnpm test:functions` | Run the function locally against real data             |
+   | `pnpm plan`           | Preview the Blueprint changes that a deploy would make |
+   | `pnpm run deploy`     | Deploy the Blueprint (`pnpm deploy` is a built-in pnpm command, so keep `run`) |
 
 `.sanity/` links this folder to its deployed Blueprint stack. It's machine-local and ignored by git.
 

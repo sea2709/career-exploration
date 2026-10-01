@@ -28,7 +28,7 @@ git worktree add -b <branch> .worktrees/<branch-with-dashes> <default-branch>
 
 ```bash
 cp <domain>/.env <domain>/.worktrees/<folder>/.env   # if .env exists
-cd <domain>/.worktrees/<folder> && npm install
+cd <domain>/.worktrees/<folder> && pnpm install
 ```
 
 5. Do all further work for that branch inside `<domain>/.worktrees/<folder>/`.
@@ -41,7 +41,7 @@ cd <domain>/.worktrees/<folder> && npm install
 cd web
 git worktree add -b feature/career-quiz .worktrees/feature-career-quiz master
 cp .env .worktrees/feature-career-quiz/.env
-cd .worktrees/feature-career-quiz && npm install
+cd .worktrees/feature-career-quiz && pnpm install
 ```
 
 ## Cleanup
