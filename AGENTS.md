@@ -6,7 +6,7 @@ Each app has its own `AGENTS.md` with layout, conventions, and commands. Read it
 
 - `web/AGENTS.md`: Astro 7 + React 19 frontend that proxies to the agent.
 - `agent/AGENTS.md`: Node service running the Gemini agents over O\*NET data.
-- `studio/`: Sanity Studio (schemas in `schemaTypes/`, O\*NET importer and coaching Knowledge Base scripts in `scripts/`). It has no `AGENTS.md` yet.
+- `studio/`: Sanity Studio (schemas in `schemaTypes/`, O\*NET importer, coaching Knowledge Base, and career quiz setup scripts in `scripts/`). It has no `AGENTS.md` yet.
 
 ## Git layout
 
@@ -24,6 +24,7 @@ These are the places where a change in one app breaks another. Check the other s
 - **Agent auth token.** `AGENT_API_TOKEN` must match in `agent/.env` and `web/.env`.
 - **Agent tools and UI labels.** Adding or renaming a tool in `agent/src` also requires updating the agent's system prompt and the label map in `web/src/components/` (`TOOL_LABELS` in `CareerChat.tsx`, `PREP_LABELS` in `InterviewCoach.tsx`, `STATUS_LABELS` in `InterestQuiz.tsx`).
 - **Structured tool outputs are mirrored in the UI.** The `scoreAnswer` and `finishInterview` schemas in `agent/src/interview-agent.ts` match the types in `web/src/components/InterviewCoach.tsx`. The quiz tool shapes in `agent/src/quiz-agent.ts` and `agent/src/onet/interests.ts` match the types at the top of `web/src/components/InterestQuiz.tsx`.
+- **Career quiz options are mirrored in the UI.** `QUIZ_FOCUSES` and `QUIZ_COSTS` in `studio/schemaTypes/careerQuizzes/careerQuiz.ts` match `FOCUS_LABELS` and `COST_LABELS` in `web/src/components/OtherCareerQuizzes.tsx`.
 - **Schemas and generated types.** Document types are defined in `studio/schemaTypes`. After changing them, run `pnpm typegen` in `studio/`, which writes `web/sanity.types.ts`. Never edit that file by hand. The agent's GROQ queries in `agent/src/onet/` depend on the same schemas.
 - **Insights endpoint name.** `SANITY_CONTEXT_ENDPOINT_NAME` must be the same in `agent/.env` and the root `.env`, or the weekly classifier won't find the agent's transcripts.
 - **O\*NET re-imports.** The agent caches interest data in memory, so restart it after running the Studio importer.
