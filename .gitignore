@@ -1,4 +1,5 @@
 node_modules
+.pnpm-store/
 
 # Independent repos with their own remotes
 /web/
@@ -17,3 +18,6 @@ node_modules
 
 .DS_Store
 *.log
+
+# Local multi-root workspace
+/careers-exploration.code-workspace
