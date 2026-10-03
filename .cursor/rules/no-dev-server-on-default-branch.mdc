@@ -1,0 +1,27 @@
+---
+description: Don't start dev servers from a checkout on main or master
+alwaysApply: true
+---
+
+# No Dev Server on the Default Branch
+
+Dang runs the dev servers for the main checkouts (`web/`, `agent/`, `studio/`) himself. Before
+starting any dev server (`astro dev`, `pnpm dev`, `sanity dev`, etc.), check the branch of the
+repo you would start it in:
+
+```bash
+git -C <domain-or-worktree> branch --show-current
+```
+
+- **`main` or `master`:** don't start it. Assume Dang's server is already running and use it
+  (Astro serves `web/` on `http://localhost:4321`, the agent on port 8787). If nothing is
+  listening, ask him to start it instead of starting one yourself.
+- **Any other branch (a worktree under `<domain>/.worktrees/`):** you may start it, in
+  background mode where the app supports it (`astro dev --background`).
+
+`astro dev status` only knows about servers started with `--background`, so it reports "No dev
+server is running" even when Dang's foreground server is up. Check the port instead:
+
+```bash
+ss -ltnp | rg ':4321|:8787'
+```
