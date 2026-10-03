@@ -16,3 +16,9 @@ node_modules
 
 # Local multi-root workspace
 /careers-exploration.code-workspace
+
+# DEV challenge post drafts and exported agent sessions
+/posts/path-one-agent.md
+/posts/path-two-vibe-code.md
+/posts/agent-sessions/path-one-hybrid-search.jsonl
+/posts/agent-sessions/path-two-retire-bug.jsonl
