@@ -1,11 +1,6 @@
 node_modules
 .pnpm-store/
 
-# Independent repos with their own remotes
-/web/
-/agent/
-/studio/
-
 # Sanity Functions build output
 /functions/*/.build
 

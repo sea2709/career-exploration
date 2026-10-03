@@ -17,11 +17,11 @@ root functions/ ── weekly classify-conversations job ───────�
 
 ## Repositories
 
-`web/`, `agent/`, and `studio/` are separate git repos with their own remotes. The root repo ignores them and only tracks the shared files listed below.
+`web/`, `agent/`, and `studio/` are separate git repos with their own remotes, included in the root repo as git submodules (see `.gitmodules`). The root repo records which commit of each app it points to and otherwise only tracks the shared files listed below.
 
 | Folder    | What it is                                                         | Remote                                                                        | Default branch |
 | --------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------- | -------------- |
-| `web/`    | Astro 7 + React 19 frontend: Career Explorer, Interview Coach, Quiz | [career-exploration](https://github.com/sea2709/career-exploration)            | `master`       |
+| `web/`    | Astro 7 + React 19 frontend: Career Explorer, Interview Coach, Quiz | [career-exploration-web](https://github.com/sea2709/career-exploration-web)    | `master`       |
 | `agent/`  | Node HTTP service running the Gemini `ToolLoopAgent`s              | [career-exploration-agent](https://github.com/sea2709/career-exploration-agent) | `main`         |
 | `studio/` | Sanity Studio: schemas, O\*NET importer, coaching Knowledge Base   | [career-exploration-studio](https://github.com/sea2709/career-exploration-studio) | `main`         |
 
@@ -36,13 +36,15 @@ The root repo contains:
 
 Requires Node `>=22.18.0` and [pnpm](https://pnpm.io/installation) 11. Every repo uses pnpm, so its global store shares packages across the apps and their worktrees.
 
-1. Clone this repo, then clone the three apps into it:
+1. Clone this repo with its submodules, then check out each app's default branch (submodules start on a detached `HEAD`):
 
    ```sh
-   git clone https://github.com/sea2709/career-exploration.git web
-   git clone https://github.com/sea2709/career-exploration-agent.git agent
-   git clone https://github.com/sea2709/career-exploration-studio.git studio
+   git clone --recurse-submodules https://github.com/sea2709/career-exploration.git careers-exploration
+   cd careers-exploration
+   git submodule foreach 'git checkout $(git config -f $toplevel/.gitmodules submodule.$name.branch)'
    ```
+
+   In an existing clone, run `git submodule update --init` instead.
 
 2. In each app, install dependencies and create `.env` from its example:
 

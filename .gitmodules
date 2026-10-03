@@ -1,0 +1,12 @@
+[submodule "web"]
+	path = web
+	url = https://github.com/sea2709/career-exploration-web.git
+	branch = master
+[submodule "agent"]
+	path = agent
+	url = https://github.com/sea2709/career-exploration-agent.git
+	branch = main
+[submodule "studio"]
+	path = studio
+	url = https://github.com/sea2709/career-exploration-studio.git
+	branch = main

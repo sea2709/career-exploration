@@ -10,8 +10,9 @@ Each app has its own `AGENTS.md` with layout, conventions, and commands. Read it
 
 ## Git layout
 
-- **Four repos, not one.** `web/`, `agent/`, and `studio/` are separate git repos with their own remotes. The root repo ignores those folders and only tracks `functions/`, `sanity.blueprint.ts`, root config, `.cursor/`, and these docs.
+- **Four repos, not one.** `web/`, `agent/`, and `studio/` are separate git repos with their own remotes, included in the root as git submodules (`.gitmodules`). Besides the submodule pointers, the root only tracks `functions/`, `sanity.blueprint.ts`, root config, `.cursor/`, and these docs.
 - **Run git commands in the repo that owns the file.** A change to `web/src/...` is committed from `web/`, not from the root. A feature that spans apps needs one commit (and one PR) per repo.
+- **Submodule pointers move only on purpose.** The root pins each app to a commit, so `git status` at the root shows `modified: web (new commits)` whenever an app's checkout moves. Don't stage these pointers as part of unrelated root changes; bump them in their own commit (`git add web agent studio`) when the user asks.
 - **Default branches differ:** `web` uses `master`; `agent` and `studio` use `main`; the root uses `main`.
 - **New branches go in worktrees.** Follow `.cursor/rules/git-worktrees.mdc`: create them under `<app>/.worktrees/`, never with `git checkout -b` in the main checkout.
 - **Never commit `.env` files.** Every repo ignores them; only `.env.example` is tracked.

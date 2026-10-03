@@ -5,8 +5,8 @@ alwaysApply: true
 
 # New Branch = New Worktree
 
-`web/`, `agent/`, and `studio/` are separate git repos. The workspace root is its own repo
-that ignores those three folders and only tracks shared files (`functions/`,
+`web/`, `agent/`, and `studio/` are separate git repos, included in the workspace root as
+git submodules. The root repo tracks the submodule pointers plus shared files (`functions/`,
 `sanity.blueprint.ts`, `.cursor/`, etc.). When the user asks to create a new branch in a
 domain, never run `git checkout -b` / `git switch -c` in the main checkout. Create a
 worktree inside that domain instead.
